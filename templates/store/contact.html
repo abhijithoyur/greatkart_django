@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+
+<form action="#" method="post">
+    {% csrf_token %}
+    <div>
+        <label for="aadhar">Aadhar Number:</label>
+        <input type="text" id="aadhar" name="aadhar" pattern="[0-9]{12}" maxlength="12" required oninput="validateAadhar()">
+    </div>
+    <div>
+        <label for="pan">PAN Number:</label>
+        <input type="text" id="pan" name="pan" oninput="validatePan()">
+    </div>
+    <div>
+        <label for="uan">UAN Number:</label>
+        <input type="text" id="uan" name="uan">
+    </div>
+    <div>
+        <button type="button" onclick="window.history.back()">Back</button>
+        <button type="submit" id="continueButton" disabled>Continue</button>
+    </div>
+</form>
+
+<script>
+    function validateAadhar() {
+        var aadharInput = document.getElementById("aadhar");
+        var panInput = document.getElementById("pan");
+        var continueButton = document.getElementById("continueButton");
+
+        if (aadharInput.validity.patternMismatch || aadharInput.value.length !== 12 || (panInput.value && !validatePan(panInput.value))) {
+            continueButton.disabled = true;
+        } else {
+            continueButton.disabled = false;
+        }
+    }
+
+    function validatePan(panValue) {
+        var panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+
+        return panPattern.test(panValue);
+    }
+</script>
+
+
+
+
+{% endblock %}

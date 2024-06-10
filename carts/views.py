@@ -1,12 +1,10 @@
-from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from carts.models import Cart,CartItem
 from store.models import Product
 
 
 # Create your views here.
-class ObjectNotExist:
-    pass
 
 #cart id is a private function, that's why it is starting with underscore
 def _cart_id(request):
@@ -17,6 +15,7 @@ def _cart_id(request):
 
 def add_to_cart(request, product_id):
     product = Product.objects.get(id=product_id)
+    print(product)
     try :
         cart = Cart.objects.get(cart_id = _cart_id(request))
     except Cart.DoesNotExist:
@@ -26,6 +25,7 @@ def add_to_cart(request, product_id):
         cart.save()
     try:
         cart_item = CartItem.objects.get(product=product,cart=cart)
+        # if product.stock > cart_item.cart_quantity:
         cart_item.cart_quantity += 1
         cart_item.save()
     except CartItem.DoesNotExist:
@@ -64,7 +64,7 @@ def cart(request, total=0, cart_quantity=0, cart_items=None):
             cart_quantity += cart_item.cart_quantity
         tax = round(total * 0.18,2)
         grand_total = round(total + tax,2)
-    except ObjectNotExist:
+    except ObjectDoesNotExist:
         pass
     context = {
         'total' : total,
